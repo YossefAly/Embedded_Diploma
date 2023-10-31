@@ -10,9 +10,6 @@
 #include "stdio.h"
 /*User Config */
 typedef unsigned int type_t;
-/*Create Buffer*/
-#define Queuewidth 5
-type_t buffer[Queuewidth];
 /*Type definitions*/
 typedef struct{
 	unsigned int length;
