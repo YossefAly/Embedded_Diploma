@@ -1,5 +1,5 @@
-#ifndef DC_MOTOR_H_
-#define DC_MOTOR_H_
+#ifndef _DC_H_
+#define _DC_H_
 
 #include "state.h"
 
