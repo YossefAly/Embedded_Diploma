@@ -1,5 +1,5 @@
-#ifndef US_SENSOR_H_
-#define US_SENSOR_H_
+#ifndef _US_H_
+#define _US_H_
 
 #include "state.h"
 #include "US.h"
@@ -19,4 +19,4 @@ void US_init();
 int ultrasonic_get_distance_random(int start, int end, int count);
 
 
-#endif /* US_SENSOR_H_ */
+#endif /* _US_H_ */
