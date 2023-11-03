@@ -19,4 +19,4 @@ void DC_init();
 extern void (*DC_state)();
 
 
-#endif /* DC_MOTOR_H_ */
+#endif /* _DC_H_ */
