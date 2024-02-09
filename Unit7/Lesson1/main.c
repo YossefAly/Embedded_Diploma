@@ -21,69 +21,38 @@
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
-typedef volatile int vuint32_t;
 
-#define RCC_BASE 		 (0x40021000)
-#define RCC_CR 			*(vuint32_t*)(RCC_BASE)
-#define RCC_APB2ENR		*(vuint32_t*)(RCC_BASE + 0x18)
 
-#define GPIOA_BASE   	 (0x40010800)
-#define GPIOA_CRL		*(vuint32_t*)(GPIOA_BASE)
-#define GPIOA_CRH		*(vuint32_t*)(GPIOA_BASE + 0x04)
-#define GPIOA_IDR		*(vuint32_t*)(GPIOA_BASE + 0x08)
+#include "LCD.h"
+#include "KEYPAD.h"
+#include "AFIO_Interface.h"
+#include "EXTI_Interface.h"
 
-#define GPIOB_BASE 		 (0x40010C00)
-#define GPIOB_CRL		*(vuint32_t*)(GPIOB_BASE)
-#define GPIOB_CRH		*(vuint32_t*)(GPIOB_BASE + 0x04)
-#define GPIOB_ODR		*(vuint32_t*)(GPIOB_BASE + 0x0C)
 
-void init_clock();
-void init_GPIOx();
+char IRQ=0;
+
+void EXTIB9_CALLBACK(void){
+
+	LCD_WRITE_STRING("HI");
+	delay_ms(1000);
+	IRQ=1;
+}
 
 int main(void)
 {
-	init_clock();
-	init_GPIOx();
-    /* Loop forever */
-	while(1){
 
-		if(!(GPIOA_IDR & 0x02)){
-
-			GPIOB_ODR |= 0x02;
-
-		}
-		else{
-
-			GPIOB_ODR &= ~0x02;
-		}
-
-		if(GPIOA_IDR & (1<<13)){
-
-			GPIOB_ODR &= ~1<<13;
-
-		}
-
-		else{
-
-			GPIOB_ODR |= 1<<13;
-
+		GPIOA_CLK_ENABLE();
+		GPIOB_CLK_ENABLE();
+		AFIO_CLK_ENABLE();
+		LCD_INIT();
+		LCD_clear_screen();
+		 void (*MPF)(void) = &EXTIB9_CALLBACK;
+		EXTI_INIT(IOB, PIN9, EXTI_TRIGGER_RISING,MPF);
+		while(1){
+			if(IRQ){
+				LCD_clear_screen();
+				IRQ=0;
+			}
 		}
 	}
-}
 
-void init_clock(){	
-	RCC_APB2ENR	|=	3<<2;
-}
-void init_GPIOx(){
-	GPIOA_CRL	=	0;
-	GPIOB_CRL	=	0;
-
-	GPIOA_CRL	|=	(0x00<<4)|(1<<6);
-	GPIOB_CRL	|=	(2<<4)|(1<<6);
-
-	GPIOA_CRH	=	0;
-	GPIOB_CRH	=	0;
-
-	GPIOA_CRH	|=	(0x00<<20)|(1<<22);
-	GPIOB_CRH	|=	(2<<20)|(1<<22);
-}
