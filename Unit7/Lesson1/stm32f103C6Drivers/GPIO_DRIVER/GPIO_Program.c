@@ -2,7 +2,8 @@
 #define _GPIO_CONFIG_H
 
 /***********************************************INCLUDES********************************/
-#include "GPIO_Private.h"
+
+
 #include "GPIO_Interface.h"
 
 
